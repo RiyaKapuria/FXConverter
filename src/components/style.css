@@ -1,0 +1,19 @@
+.converter-box {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.converter-textbox {
+  display: flex;
+  flex: 1;
+}
+
+.converter-card {
+  padding: 16px;
+  display: flex;
+  flex: 1;
+}

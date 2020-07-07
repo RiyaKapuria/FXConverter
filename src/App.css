@@ -1,0 +1,11 @@
+
+*{
+  margin: 0px;
+}
+
+.App{
+  width: 100vw;
+  height: 100vh;
+  background: #e7ece9;
+  overflow: hidden;
+}
