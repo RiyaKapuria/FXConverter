@@ -3,24 +3,24 @@ import { Container, Typography, Grid, Paper } from "@material-ui/core";
 import "./style.css";
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import Controller from "./ConverterController";
+import ConverterFunc from "./ConverterFunc";
 
 const side = {
-  LEFT: "LEFT",
-  RIGHT: "RIGHT",
+  FROM: "FROM",
+  TO: "TO"
 };
 
-export default class Converter extends Component {
+export default class CurrencyConverter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      [side.LEFT]: {
+      [side.FROM]: {
         currency: null,
-        amount: null,
+        amount: 0,
       },
-      [side.RIGHT]: {
+      [side.TO]: {
         currency: null,
-        amount: null,
+        amount: 0,
       },
     };
   }
@@ -34,7 +34,7 @@ export default class Converter extends Component {
     let data = this.state[name];
     data.currency = value;
 
-    let fromTo = this.findFromTo(side.LEFT);
+    let fromTo = this.findFromTo(side.FROM);
 
     this.setState({ [name]: data }, () => this.calculate(fromTo));
   }
@@ -51,8 +51,8 @@ export default class Converter extends Component {
 
     if(!value){ // if any one of the amount is invalid or 0, -> reset
       data = this.state;
-      data[side.LEFT].amount = 0;
-      data[side.RIGHT].amount = 0;
+      data[side.FROM].amount = 0;
+      data[side.TO].amount = 0;
 
       this.setState(data);
       return;
@@ -72,12 +72,12 @@ export default class Converter extends Component {
     let from = null;
     let to = null;
 
-    if (name === side.LEFT) {
-      from = side.LEFT;
-      to = side.RIGHT;
+    if (name === side.FROM) {
+      from = side.FROM;
+      to = side.TO;
     } else {
-      from = side.RIGHT;
-      to = side.LEFT;
+      from = side.TO;
+      to = side.FROM;
     }
 
     return { from, to };
@@ -92,9 +92,9 @@ export default class Converter extends Component {
     let fromData = data[from];
     let toData = data[to];
 
-    let result = Controller.calculate(fromData, toData);
+    let result = ConverterFunc.calculate(fromData, toData);
     if(result){
-      result = Controller.fixDecimal(toData.currency,result);
+      result = ConverterFunc.fixDecimal(toData.currency,result);
       data[to].amount = result;
       this.setState(data);
     }
@@ -112,39 +112,39 @@ export default class Converter extends Component {
               
               <Grid item xs={12} sm={6}>
                 <SelectOption
-                  items={Controller.getCurrencies()}
+                  items={ConverterFunc.getCurrencies()}
                   label={"From"}
-                  onChange={(value) => this.handleSelect(value, side.LEFT)}
+                  onChange={(value) => this.handleSelect(value, side.FROM)}
                 />
                 <br></br>
                 <br></br>
                 <Input
-                  ref={side.LEFT}
-                  onChange={(e) => this.handleAmountChange(e, side.LEFT)}
-                  id={side.LEFT}
+                  ref={side.FROM}
+                  onChange={(e) => this.handleAmountChange(e, side.FROM)}
+                  id={side.FROM}
                   variant="outlined"
                   label="Amount"
-                  value = {this.state.LEFT.amount}
-                  disabled={(this.state.LEFT.currency === null || this.state.RIGHT.currency === null) ? true : false}
+                  value = {this.state.FROM.amount}
+                  disabled={(this.state.FROM.currency === null || this.state.TO.currency === null) ? true : false}
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
                 <SelectOption
-                  items={Controller.getCurrencies()}
+                  items={ConverterFunc.getCurrencies()}
                   label={"To"}
-                  onChange={(value) => this.handleSelect(value, side.RIGHT)}
+                  onChange={(value) => this.handleSelect(value, side.TO)}
                 />
                 <br></br>
                 <br></br>
                 <Input
-                  value = {this.state.RIGHT.amount}
-                  ref={side.RIGHT}
-                  id={side.RIGHT}
+                  value = {this.state.TO.amount}
+                  ref={side.TO}
+                  id={side.TO}
                   variant="outlined"
                   label="Amount"
-                  onChange={(e) => this.handleAmountChange(e, side.RIGHT)}
-                  disabled={(this.state.LEFT.currency === null || this.state.RIGHT.currency === null) ? true : false}
+                  onChange={(e) => this.handleAmountChange(e, side.TO)}
+                  disabled={(this.state.FROM.currency === null || this.state.TO.currency === null) ? true : false}
                 />
               </Grid>
             </Grid>
